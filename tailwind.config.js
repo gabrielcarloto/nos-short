@@ -6,6 +6,11 @@ export default {
       sans: ['"Open Sans"'],
       serif: ['"Playfair Display"'],
     },
+    extend: {
+      fontSize: {
+        '4xl': '2.5rem',
+      },
+    },
   },
   plugins: [],
 };

@@ -3,6 +3,5 @@
 @tailwind utilities;
 
 body {
-  width: min(474px + 16px * 2, 100%);
-  @apply p-4 m-auto;
+  @apply px-4 bg-zinc-50;
 }
