@@ -4,7 +4,7 @@ export default function App() {
   return (
     <div className="w-[min(474px,100%)] py-4 min-h-screen grid grid-rows-[max-content_auto_max-content] m-auto text-zinc-800">
       <div className="flex flex-col gap-5">
-        <header className="pb-[10px] w-full grid place-items-center">
+        <header className="pb-[10px] w-full flex justify-center">
           <img src={logoSvg} alt="Logo nós.short" className="w-32" />
         </header>
         <div className="flex flex-col gap-y-2 justify-center items-center">
