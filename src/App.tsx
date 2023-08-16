@@ -1,4 +1,7 @@
+import Button from './components/Button';
+
 import logoSvg from './assets/Logo.svg';
+import clipboardIcon from './assets/Clipboard.svg';
 
 export default function App() {
   return (
@@ -19,9 +22,12 @@ export default function App() {
           <input
             placeholder="Insira um link para encurtar..."
             type="url"
-            className="w-full py-3 px-6 border-2 rounded-lg border-zinc-300 bg-zinc-50"
+            className="grow py-3 px-6 border-2 rounded-lg border-zinc-300 bg-zinc-50"
           />
-          <button className="p-2 bg-amber-800 rounded-lg">ICON</button>
+          <Button.Root>
+            <Button.Icon src={clipboardIcon} />
+            Texto
+          </Button.Root>
         </form>
         <a href="#" className="text-xs">
           Visualizar os últimos links encurtados
