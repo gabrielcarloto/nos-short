@@ -24,10 +24,10 @@ export default function App() {
             type="url"
             className="grow py-3 px-6 border-2 rounded-lg border-zinc-300 bg-zinc-50"
           />
-          <Button.Root>
-            <Button.Icon src={clipboardIcon} />
+          <Button>
+            <img src={clipboardIcon} />
             Texto
-          </Button.Root>
+          </Button>
         </form>
         <a href="#" className="text-xs">
           Visualizar os últimos links encurtados
