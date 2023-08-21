@@ -8,9 +8,9 @@ export default function App() {
   const [link, setLink] = useState("");
 
   return (
-    <div className="m-auto grid min-h-screen w-[min(474px,100%)] grid-rows-[max-content_auto_max-content] py-4 text-zinc-800">
-      <div className="flex flex-col gap-5">
-        <header className="flex w-full justify-center pb-[10px]">
+    <div className="m-auto grid min-h-screen w-[min(474px,100%)] grid-rows-[0.5fr_1fr_max-content] py-4 text-zinc-800">
+      <div className="flex flex-col justify-between">
+        <header className="flex w-full justify-center md:h-[216px] lg:h-[182px]">
           <img src={logoSvg} alt="Logo nós.short" className="w-32" />
         </header>
         <div className="flex flex-col items-center justify-center gap-y-2">
@@ -31,7 +31,6 @@ export default function App() {
           />
           <Button disabled={link === ""}>
             <img src={clipboardIcon} />
-            Texto
           </Button>
         </form>
         <a href="#" className="text-xs">
