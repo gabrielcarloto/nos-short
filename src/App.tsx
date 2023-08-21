@@ -2,8 +2,11 @@ import Button from "./components/Button";
 
 import logoSvg from "./assets/Logo.svg";
 import clipboardIcon from "./assets/Clipboard.svg";
+import { useState } from "react";
 
 export default function App() {
+  const [link, setLink] = useState("");
+
   return (
     <div className="m-auto grid min-h-screen w-[min(474px,100%)] grid-rows-[max-content_auto_max-content] py-4 text-zinc-800">
       <div className="flex flex-col gap-5">
@@ -23,8 +26,10 @@ export default function App() {
             placeholder="Insira um link para encurtar..."
             type="url"
             className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
           />
-          <Button>
+          <Button disabled={link === ""}>
             <img src={clipboardIcon} />
             Texto
           </Button>
