@@ -28,7 +28,7 @@ function useSavedLinks() {
   const KEY = "savedLinks";
   const [links, setLinks] = useState<SavedLink[]>(() => {
     const item = localStorage.getItem(KEY);
-    return item ? JSON.parse(item) : [];
+    return (item ? JSON.parse(item) : []) as SavedLink[];
   });
 
   useEffect(() => {
@@ -74,6 +74,7 @@ export default function App() {
       // NOTE: é suposto redirecionar para a página de links encurtados ou ficar na mesma, apenas substituindo o input?
     } catch (e) {
       setError(true);
+      // eslint-disable-next-line no-console
       if (e instanceof Error) console.error(e);
     } finally {
       setLoading(false);
