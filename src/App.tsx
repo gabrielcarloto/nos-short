@@ -2,84 +2,12 @@ import Button from "./components/Button";
 
 import logoSvg from "./assets/Logo.svg";
 import clipboardIcon from "./assets/Clipboard.svg";
-import { useEffect, useState } from "react";
-
-interface ShortenedURL {
-  url: string;
-  key: string;
-  ttl: number;
-  link_url: string;
-}
-
-type APICreateResponse =
-  | ShortenedURL
-  | {
-      error: {
-        message: string;
-        type: string;
-      };
-    };
-
-type SavedLink = Omit<ShortenedURL, "ttl"> & {
-  expires: Date;
-};
-
-function useSavedLinks() {
-  const KEY = "savedLinks";
-  const [links, setLinks] = useState<SavedLink[]>(() => {
-    const item = localStorage.getItem(KEY);
-    return (item ? JSON.parse(item) : []) as SavedLink[];
-  });
-
-  useEffect(() => {
-    localStorage.setItem(KEY, JSON.stringify(links));
-  }, [links]);
-
-  return [links, setLinks] as const;
-}
+import { useState } from "react";
+import useLinksAPI from "./hooks/useLinksAPI";
 
 export default function App() {
-  const [_savedLinks, setSavedLinks] = useSavedLinks();
   const [link, setLink] = useState("");
-  const [_error, setError] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  async function createShortenedLink() {
-    const API_URL = "https://url.api.stdlib.com/temporary@0.3.0/create/";
-    setLoading(true);
-    setError(false);
-
-    const params = new URLSearchParams({
-      url: link,
-    });
-
-    const fetchURL = API_URL + "?" + params.toString();
-
-    try {
-      const res = await fetch(fetchURL);
-
-      const data: APICreateResponse = await res.json();
-
-      if ("error" in data) throw new Error("API Error: " + data.error.message);
-
-      setSavedLinks((l) => [
-        ...l,
-        {
-          url: data.url,
-          link_url: data.link_url,
-          key: data.key,
-          expires: new Date(Date.now() + data.ttl * 1000),
-        },
-      ]);
-      // NOTE: é suposto redirecionar para a página de links encurtados ou ficar na mesma, apenas substituindo o input?
-    } catch (e) {
-      setError(true);
-      // eslint-disable-next-line no-console
-      if (e instanceof Error) console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const [{ createShortenedLink }, loading] = useLinksAPI();
 
   return (
     <div className="m-auto grid min-h-screen w-[min(474px,100%)] grid-rows-[0.5fr_1fr_max-content] py-4 text-zinc-800">
@@ -97,9 +25,10 @@ export default function App() {
       <main className="mt-[108px] flex flex-col items-center gap-2 md:mt-40">
         <form
           className="flex w-full gap-4"
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={async (e) => {
             e.preventDefault();
-            await createShortenedLink();
+            await createShortenedLink(link);
           }}
         >
           <input
