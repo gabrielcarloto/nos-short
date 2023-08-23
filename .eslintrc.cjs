@@ -24,7 +24,12 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ["tsconfig.json"],
   },
-  plugins: ["react", "react-refresh", "@typescript-eslint"],
+  plugins: [
+    "react",
+    "react-refresh",
+    "@typescript-eslint",
+    "simple-import-sort",
+  ],
   settings: {
     "import/resolver": {
       typescript: {
@@ -59,5 +64,19 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
+    "simple-import-sort/imports": [
+      "error",
+      {
+        groups: [
+          ["^\\u0000"],
+          ["^node:"],
+          ["^@?\\w"],
+          ["^"],
+          ["^\\."],
+          ["^\\..*\\.(svg|jpg|jpeg|png|css)"],
+        ],
+      },
+    ],
+    "simple-import-sort/exports": "error",
   },
 };

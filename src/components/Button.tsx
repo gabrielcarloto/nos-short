@@ -1,4 +1,4 @@
-import type { DetailedHTMLProps, ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, DetailedHTMLProps, ReactNode } from "react";
 
 interface ButtonProps
   extends DetailedHTMLProps<

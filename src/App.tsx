@@ -1,9 +1,10 @@
-import Button from "./components/Button";
-
-import logoSvg from "./assets/Logo.svg";
-import clipboardIcon from "./assets/Clipboard.svg";
 import { useState } from "react";
+
+import Button from "./components/Button";
 import useLinksAPI from "./hooks/useLinksAPI";
+
+import clipboardIcon from "./assets/Clipboard.svg";
+import logoSvg from "./assets/Logo.svg";
 
 export default function App() {
   const [link, setLink] = useState("");
