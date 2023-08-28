@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import type { ShortenedURL } from "./useLinksAPI";
 
-type SavedLink = Omit<ShortenedURL, "ttl"> & {
+export type SavedLink = Omit<ShortenedURL, "ttl"> & {
   expires: Date;
 };
 
