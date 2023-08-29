@@ -60,7 +60,7 @@ export default function App() {
               disabled={loading}
               onChange={(e) => setLink(e.target.value)}
             />
-            <Button disabled={link === "" || loading}>
+            <Button title="Encurtar link" disabled={link === "" || loading}>
               <img src={linkIcon} />
             </Button>
           </form>

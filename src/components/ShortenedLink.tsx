@@ -12,6 +12,7 @@ export default function ShortenedLink({ link }: { link: string }) {
         {link}
       </a>
       <Button
+        title="Copiar link encurtado"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={async () => {
           await navigator.clipboard.writeText(link);
