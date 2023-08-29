@@ -55,7 +55,7 @@ export default function App() {
             <input
               placeholder="Insira um link para encurtar..."
               type="text"
-              className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3 invalid:border-orange-500"
+              className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3 text-zinc-400 placeholder-zinc-400 invalid:border-orange-500"
               value={link}
               disabled={loading}
               onChange={(e) => setLink(e.target.value)}

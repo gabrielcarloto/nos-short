@@ -7,7 +7,7 @@ export default function ShortenedLink({ link }: { link: string }) {
     <div className="flex w-full gap-4">
       <a
         href={link}
-        className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3 invalid:border-orange-500"
+        className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3 text-zinc-400 invalid:border-orange-500"
       >
         {link}
       </a>
