@@ -4,10 +4,13 @@ import { Link } from "wouter";
 import Button from "../components/Button";
 import ShortenedLink from "../components/ShortenedLink";
 import useCreateLink from "../hooks/useCreateLink";
+import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
 
 import linkIcon from "../assets/Link.svg";
 
 export default function IndexPage() {
+  useSetDocumentTitle("Encurtar links");
+
   const [link, setLink] = useState("");
   const [showShortenedLink, setShowShortenedLink] = useState(false);
   const [createShortenedLink, { loading, data: shortenedLink }] = useCreateLink(

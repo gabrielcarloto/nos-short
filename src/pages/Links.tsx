@@ -3,8 +3,11 @@ import { Link } from "wouter";
 
 import ShortenedLink from "../components/ShortenedLink";
 import useSavedLinks from "../hooks/useSavedLinks";
+import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
 
 export default function LinksPage() {
+  useSetDocumentTitle("Links salvos");
+
   const [links, setSavedLinks] = useSavedLinks();
 
   const updateLinksExpires = useCallback(() => {
