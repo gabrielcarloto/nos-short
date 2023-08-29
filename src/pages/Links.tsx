@@ -50,7 +50,9 @@ export default function LinksPage() {
         return (
           <article className="grid w-full gap-2" key={l.key}>
             <div className="text-xs text-zinc-300">
-              <p>Link original: {l.url}</p>
+              <p>
+                Link original: <a href={l.url}>{l.url}</a>
+              </p>
               <p>Expira em: {expires[l.key]} segundos</p>
             </div>
             <ShortenedLink link={l.link_url} />
