@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 
 import Button from "../components/Button";
 import ShortenedLink from "../components/ShortenedLink";
@@ -16,11 +17,10 @@ export default function IndexPage() {
   );
 
   return (
-    <>
-      {" "}
+    <div className="mt-[108px] flex flex-col items-center gap-2 md:mt-40">
       {showShortenedLink ? (
         <>
-          <ShortenedLink link={shortenedLink.link_url} />
+          <ShortenedLink link={shortenedLink!.link_url} />
           <button
             onClick={() => {
               setShowShortenedLink(false);
@@ -53,9 +53,9 @@ export default function IndexPage() {
           </Button>
         </form>
       )}
-      <a href="#" className="text-xs">
-        Visualizar os últimos links encurtados
-      </a>
-    </>
+      <Link href="/links">
+        <a className="text-xs">Visualizar os últimos links encurtados</a>
+      </Link>
+    </div>
   );
 }
