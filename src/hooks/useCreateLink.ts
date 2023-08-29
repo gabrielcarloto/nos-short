@@ -66,7 +66,7 @@ export default function useCreateLink(config?: { onSuccess?: () => void }) {
       url: data.url,
       link_url: data.link_url,
       key: data.key,
-      expires: new Date(Date.now() + data.ttl * 1000),
+      expires: Date.now() + data.ttl * 1000,
     };
 
     setData(parsedData);

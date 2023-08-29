@@ -15,7 +15,7 @@ export default function LinksPage() {
     const linksExpires: Record<string, number> = {};
 
     const filteredLinks = links.filter((link) => {
-      const secondsToExpire = (new Date(link.expires).valueOf() - now) / 1000;
+      const secondsToExpire = (link.expires - now) / 1000;
 
       if (secondsToExpire > 0) {
         linksExpires[link.key] = Math.floor(secondsToExpire);
