@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 import Button from "./components/Button";
+import ShortenedLink from "./components/ShortenedLink";
 import useCreateLink from "./hooks/useCreateLink";
 
-import clipboardIcon from "./assets/Clipboard.svg";
 import linkIcon from "./assets/Link.svg";
 import logoSvg from "./assets/Logo.svg";
 
@@ -32,22 +32,7 @@ export default function App() {
       <main className="mt-[108px] flex flex-col items-center gap-2 md:mt-40">
         {showShortenedLink ? (
           <>
-            <div className="flex w-full gap-4">
-              <a
-                href={shortenedLink!.link_url}
-                className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3 invalid:border-orange-500"
-              >
-                {shortenedLink!.link_url}
-              </a>
-              <Button
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onClick={async () => {
-                  await navigator.clipboard.writeText(shortenedLink!.link_url);
-                }}
-              >
-                <img src={clipboardIcon} />
-              </Button>
-            </div>
+            <ShortenedLink link={shortenedLink!.link_url} />
             <button
               onClick={() => {
                 setShowShortenedLink(false);
