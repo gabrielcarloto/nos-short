@@ -1,14 +1,20 @@
 import { useState } from "react";
 
 import Button from "./components/Button";
-import useLinksAPI from "./hooks/useLinksAPI";
+import useCreateLink from "./hooks/useCreateLink";
 
 import clipboardIcon from "./assets/Clipboard.svg";
+import linkIcon from "./assets/Link.svg";
 import logoSvg from "./assets/Logo.svg";
 
 export default function App() {
   const [link, setLink] = useState("");
-  const [{ createShortenedLink }, loading] = useLinksAPI();
+  const [showShortenedLink, setShowShortenedLink] = useState(false);
+  const [createShortenedLink, { loading, data: shortenedLink }] = useCreateLink(
+    {
+      onSuccess: () => setShowShortenedLink(true),
+    },
+  );
 
   return (
     <div className="m-auto grid min-h-screen w-[min(474px,100%)] grid-rows-[0.5fr_1fr_max-content] py-4 text-zinc-800">
@@ -24,25 +30,56 @@ export default function App() {
         </div>
       </div>
       <main className="mt-[108px] flex flex-col items-center gap-2 md:mt-40">
-        <form
-          className="flex w-full gap-4"
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={async (e) => {
-            e.preventDefault();
-            await createShortenedLink(link);
-          }}
-        >
-          <input
-            placeholder="Insira um link para encurtar..."
-            type="text"
-            className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3 invalid:border-orange-500"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-          />
-          <Button disabled={link === "" || loading}>
-            <img src={clipboardIcon} />
-          </Button>
-        </form>
+        {showShortenedLink ? (
+          <>
+            <div className="flex w-full gap-4">
+              <a
+                href={shortenedLink!.link_url}
+                className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3 invalid:border-orange-500"
+              >
+                {shortenedLink!.link_url}
+              </a>
+              <Button
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={async () => {
+                  await navigator.clipboard.writeText(shortenedLink!.link_url);
+                }}
+              >
+                <img src={clipboardIcon} />
+              </Button>
+            </div>
+            <button
+              onClick={() => {
+                setShowShortenedLink(false);
+                setLink("");
+              }}
+              className="text-xs"
+            >
+              Voltar para encurtar mais links
+            </button>
+          </>
+        ) : (
+          <form
+            className="flex w-full gap-4"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onSubmit={async (e) => {
+              e.preventDefault();
+              await createShortenedLink(link);
+            }}
+          >
+            <input
+              placeholder="Insira um link para encurtar..."
+              type="text"
+              className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3 invalid:border-orange-500"
+              value={link}
+              disabled={loading}
+              onChange={(e) => setLink(e.target.value)}
+            />
+            <Button disabled={link === "" || loading}>
+              <img src={linkIcon} />
+            </Button>
+          </form>
+        )}
         <a href="#" className="text-xs">
           Visualizar os últimos links encurtados
         </a>
