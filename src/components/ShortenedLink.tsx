@@ -18,7 +18,7 @@ export default function ShortenedLink({ link }: { link: string }) {
           await navigator.clipboard.writeText(link);
         }}
       >
-        <img src={clipboardIcon} />
+        <img src={clipboardIcon} alt="Ícone de prancheta" />
       </Button>
     </div>
   );

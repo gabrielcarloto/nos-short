@@ -52,7 +52,7 @@ export default function IndexPage() {
             onChange={(e) => setLink(e.target.value)}
           />
           <Button title="Encurtar link" disabled={link === "" || loading}>
-            <img src={linkIcon} />
+            <img src={linkIcon} alt="Ícone de corrente" />
           </Button>
         </form>
       )}
