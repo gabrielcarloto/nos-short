@@ -1,4 +1,4 @@
-import { Route } from "wouter";
+import { Route, Switch } from "wouter";
 
 import IndexPage from "./pages";
 import LinksPage from "./pages/Links";
@@ -22,12 +22,20 @@ export default function App() {
         </div>
       </div>
       <main className="w-full">
-        <Route path="/">
-          <IndexPage />
-        </Route>
-        <Route path="/links">
-          <LinksPage />
-        </Route>
+        <Switch>
+          <Route path="/">
+            <IndexPage />
+          </Route>
+          <Route path="/links">
+            <LinksPage />
+          </Route>
+          <Route>
+            <div className="flex h-1/2 flex-col items-center justify-center gap-2">
+              <h2 className="font-serif text-3xl font-bold">404</h2>
+              <p className="text-lg">Não encontrado</p>
+            </div>
+          </Route>
+        </Switch>
       </main>
       <footer className="mt-4 flex flex-col items-center justify-center self-end text-xs">
         <p className="w-[10.5rem] text-center md:w-auto">
