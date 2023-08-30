@@ -12,13 +12,14 @@ export default function LinksPage() {
 
   const updateLinksExpires = useCallback(() => {
     const now = Date.now();
-    const linksExpires: Record<string, number> = {};
+    const linksExpires: Record<string, string> = {};
 
     const filteredLinks = links.filter((link) => {
       const secondsToExpire = (link.expires - now) / 1000;
 
       if (secondsToExpire > 0) {
-        linksExpires[link.key] = Math.floor(secondsToExpire);
+        linksExpires[link.key] = formatExpires(secondsToExpire);
+
         return true;
       }
 
@@ -31,7 +32,7 @@ export default function LinksPage() {
   }, [links, setSavedLinks]);
 
   const [expires, setExpires] =
-    useState<Record<string, number>>(updateLinksExpires);
+    useState<Record<string, string>>(updateLinksExpires);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -53,7 +54,7 @@ export default function LinksPage() {
               <p>
                 Link original: <a href={l.url}>{l.url}</a>
               </p>
-              <p>Expira em: {expires[l.key]} segundos</p>
+              <p>Expira em: {expires[l.key]}</p>
             </div>
             <ShortenedLink link={l.link_url} />
           </article>
@@ -64,4 +65,22 @@ export default function LinksPage() {
       </Link>
     </div>
   );
+}
+
+function formatExpires(secondsDiff: number) {
+  const minute = 60,
+    hour = minute * 60,
+    day = hour * 24;
+
+  if (secondsDiff < minute) return secondsDiff + " segundos";
+  if (secondsDiff < hour) return Math.round(secondsDiff / minute) + " minutos";
+
+  if (secondsDiff < day)
+    return `${Math.round(secondsDiff / hour)} horas e ${Math.round(
+      (secondsDiff % hour) / minute,
+    )} minutos`;
+
+  const days = Math.round(secondsDiff / day);
+
+  return days + " dia" + (days > 1 ? "s" : "");
 }
