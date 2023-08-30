@@ -1,21 +1,55 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { Link } from "wouter";
 
 import Button from "../components/Button";
 import ShortenedLink from "../components/ShortenedLink";
 import useCreateLink from "../hooks/useCreateLink";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
+import toastDefaults from "../utils/toast-defaults";
 
 import linkIcon from "../assets/Link.svg";
 
 export default function IndexPage() {
   useSetDocumentTitle("Encurtar links");
 
+  const toastId = useRef<ReturnType<typeof toast> | null>(null);
   const [link, setLink] = useState("");
   const [showShortenedLink, setShowShortenedLink] = useState(false);
   const [createShortenedLink, { loading, data: shortenedLink }] = useCreateLink(
     {
-      onSuccess: () => setShowShortenedLink(true),
+      onLoading: () => {
+        toastId.current = toast<string>("Encurtando link...", {
+          ...toastDefaults,
+          isLoading: true,
+        });
+      },
+      onSuccess: () => {
+        setShowShortenedLink(true);
+
+        if (toastId.current) {
+          toast.update(toastId.current, {
+            render: "Link encurtado com sucesso!",
+            type: "success",
+            autoClose: 5000,
+            isLoading: false,
+          });
+
+          toastId.current = null;
+        }
+      },
+      onError: () => {
+        if (toastId.current) {
+          toast.update(toastId.current, {
+            render: "Ocorreu um erro inesperado.",
+            type: "error",
+            autoClose: 5000,
+            isLoading: false,
+          });
+
+          toastId.current = null;
+        }
+      },
     },
   );
 

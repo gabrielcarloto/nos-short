@@ -3,5 +3,10 @@
 @tailwind utilities;
 
 body {
-  @apply px-4 bg-zinc-50;
+  @apply bg-zinc-50 px-4;
+
+  /* react-toastify */
+  --toastify-color-light: #f59e0b;
+  --toastify-text-color-light: white;
+  --toastify-spinner-color: #b45309;
 }

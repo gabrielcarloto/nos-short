@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
+import toastDefaults from "../utils/toast-defaults";
 import Button from "./Button";
 
 import checkIcon from "../assets/Check.svg";
@@ -22,6 +24,10 @@ export default function ShortenedLink({ link }: { link: string }) {
         onClick={async () => {
           await navigator.clipboard.writeText(link);
           setCopiedLink(true);
+          toast<string>("Foi copiado na sua área de transferência", {
+            ...toastDefaults,
+            type: "success",
+          });
 
           setInterval(() => setCopiedLink(false), 2000);
         }}

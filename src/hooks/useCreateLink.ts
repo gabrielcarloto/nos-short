@@ -37,7 +37,17 @@ async function apiFetch<T extends object>(
   }
 }
 
-export default function useCreateLink(config?: { onSuccess?: () => void }) {
+function safeCall(fn?: () => void) {
+  if (fn) fn();
+}
+
+interface Config {
+  onSuccess?: () => void;
+  onLoading?: () => void;
+  onError?: () => void;
+}
+
+export default function useCreateLink(config?: Config) {
   const [_, setSavedLinks] = useSavedLinks();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
@@ -47,6 +57,8 @@ export default function useCreateLink(config?: { onSuccess?: () => void }) {
     setData(undefined);
     setError(undefined);
     setLoading(true);
+
+    if (config) safeCall(config.onLoading);
 
     const params = new URLSearchParams({
       url: link,
@@ -59,6 +71,7 @@ export default function useCreateLink(config?: { onSuccess?: () => void }) {
     if (data instanceof Error) {
       setError(data);
       setLoading(false);
+      if (config) safeCall(config.onError);
       return;
     }
 
@@ -73,7 +86,9 @@ export default function useCreateLink(config?: { onSuccess?: () => void }) {
     setSavedLinks((prevLinks) => [...prevLinks, parsedData]);
     setLoading(false);
 
-    if (config?.onSuccess) config.onSuccess();
+    if (config) {
+      safeCall(config.onSuccess);
+    }
   }
 
   return [load, { loading, error, data }] as const;
