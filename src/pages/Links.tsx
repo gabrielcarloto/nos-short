@@ -72,7 +72,7 @@ function formatExpires(secondsDiff: number) {
     hour = minute * 60,
     day = hour * 24;
 
-  if (secondsDiff < minute) return secondsDiff + " segundos";
+  if (secondsDiff < minute) return Math.round(secondsDiff) + " segundos";
   if (secondsDiff < hour) return Math.round(secondsDiff / minute) + " minutos";
 
   if (secondsDiff < day)
