@@ -29,7 +29,7 @@ export default function ShortenedLink({ link }: { link: string }) {
             type: "success",
           });
 
-          setInterval(() => setCopiedLink(false), 2000);
+          setTimeout(() => setCopiedLink(false), 2000);
         }}
       >
         <img
