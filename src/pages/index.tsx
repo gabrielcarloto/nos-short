@@ -41,7 +41,7 @@ export default function IndexPage() {
       onError: () => {
         if (toastId.current) {
           toast.update(toastId.current, {
-            render: "Ocorreu um erro inesperado.",
+            render: "Aconteceu algum problema! Tente mais tarde!",
             type: "error",
             autoClose: 5000,
             isLoading: false,
