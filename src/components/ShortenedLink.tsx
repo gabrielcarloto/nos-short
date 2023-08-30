@@ -22,14 +22,21 @@ export default function ShortenedLink({ link }: { link: string }) {
         title="Copiar link encurtado"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={async () => {
-          await navigator.clipboard.writeText(link);
-          setCopiedLink(true);
-          toast<string>("Foi copiado na sua área de transferência", {
-            ...toastDefaults,
-            type: "success",
-          });
+          try {
+            await navigator.clipboard.writeText(link);
+            setCopiedLink(true);
+            toast<string>("Foi copiado na sua área de transferência", {
+              ...toastDefaults,
+              type: "success",
+            });
 
-          setTimeout(() => setCopiedLink(false), 2000);
+            setTimeout(() => setCopiedLink(false), 5000);
+          } catch (_) {
+            toast<string>("Aconteceu algum problema! Tente mais tarde!", {
+              ...toastDefaults,
+              type: "error",
+            });
+          }
         }}
       >
         <img
