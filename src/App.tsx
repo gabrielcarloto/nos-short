@@ -1,4 +1,4 @@
-import { Route, Switch } from "wouter";
+import { Link, Route, Switch } from "wouter";
 
 import IndexPage from "./pages";
 import LinksPage from "./pages/Links";
@@ -8,11 +8,15 @@ export default function App() {
     <div className="m-auto grid min-h-screen w-[min(474px,100%)] grid-rows-[35vh_auto_max-content] py-4 text-zinc-800">
       <div className="flex flex-col justify-between">
         <header className="flex w-full justify-center md:h-[216px] lg:h-[182px]">
-          <img
-            src="/logo.svg"
-            alt="Logo nós.short"
-            className="aspect-square w-32"
-          />
+          <Link href="/">
+            <a title="Voltar à página inicial">
+              <img
+                src="/logo.svg"
+                alt="Logo nós.short"
+                className="aspect-square w-32"
+              />
+            </a>
+          </Link>
         </header>
         <div className="flex flex-col items-center justify-center gap-y-2">
           <h1 className="font-serif text-4xl font-bold text-zinc-950">
