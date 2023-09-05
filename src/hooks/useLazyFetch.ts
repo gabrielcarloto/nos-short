@@ -7,7 +7,7 @@ interface APIError {
   };
 }
 
-export interface Config<DataType extends object> {
+export interface Config<DataType> {
   onSuccess?: (data: DataType) => void;
   onLoading?: () => void;
   onError?: (e: unknown) => void;
@@ -21,7 +21,7 @@ function safeCall<T extends (...args: any[]) => void>(
   if (fn) fn(...args);
 }
 
-export default function useLazyFetch<DataType extends object>(
+export default function useLazyFetch<DataType = unknown>(
   config: Config<DataType> = {},
 ) {
   const [loading, setLoading] = useState(false);
@@ -39,7 +39,8 @@ export default function useLazyFetch<DataType extends object>(
       const res = await fetch(BASE_API_URL + url, opts);
       const data = (await res.json()) as DataType | APIError;
 
-      if ("error" in data) throw new Error("API Error: " + data.error.message);
+      if (typeof data === "object" && data !== null && "error" in data)
+        throw new Error("API Error: " + data.error.message);
 
       safeCall(config.onSuccess, data);
       return data;
