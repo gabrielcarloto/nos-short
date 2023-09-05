@@ -2,7 +2,7 @@ import { SVGProps, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 
 import ShortenedLink from "../components/ShortenedLink";
-import useLazyFetch from "../hooks/useLazyFetch";
+import useLazyFetch, { Config } from "../hooks/useLazyFetch";
 import useSavedLinks from "../hooks/useSavedLinks";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
 
@@ -46,9 +46,15 @@ export default function LinksPage() {
     }, 1000);
   }, [updateLinksExpires]);
 
-  // remoção do link
+  const [removeLink, { linksBeingRemoved }] = useRemoveLink({
+    deleteLinkCallback: (key) => {
+      setSavedLinks((prev) => prev.filter((link) => link.key !== key));
 
-  const [load] = useLazyFetch<boolean>();
+      const newExpires = structuredClone(expires) as typeof expires;
+      delete newExpires[key];
+      setExpires(newExpires);
+    },
+  });
 
   return (
     <div className="mt-14 flex flex-col items-center gap-2">
@@ -64,22 +70,8 @@ export default function LinksPage() {
             <ShortenedLink link={l.link_url} />
             <button
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={async () => {
-                const res = await load("destroy/", {
-                  method: "POST",
-                  body: JSON.stringify({ key: l.key }),
-                });
-
-                if (res instanceof Error || !res) return;
-
-                setSavedLinks((prev) =>
-                  prev.filter((link) => link.key !== l.key),
-                );
-
-                const newExpires = structuredClone(expires) as typeof expires;
-                delete newExpires[l.key];
-                setExpires(newExpires);
-              }}
+              onClick={async () => await removeLink(l.key)}
+              disabled={Boolean(linksBeingRemoved.find((key) => key === l.key))}
               title="Remover link"
               className="flex w-full items-center justify-center gap-2 p-2 font-bold text-zinc-950 transition-colors duration-150 hover:text-orange-500 active:text-orange-800 disabled:text-zinc-600"
             >
@@ -94,6 +86,29 @@ export default function LinksPage() {
       </Link>
     </div>
   );
+}
+
+function useRemoveLink({
+  deleteLinkCallback,
+  ...config
+}: Config<boolean> & { deleteLinkCallback?: (key: string) => void } = {}) {
+  const [linksBeingRemoved, setLinksBeingRemoved] = useState<string[]>([]);
+  const [load, { error }] = useLazyFetch<boolean>(config);
+
+  async function removeLink(key: string) {
+    setLinksBeingRemoved((prev) => prev.concat(key));
+
+    const res = await load("destroy/", {
+      method: "POST",
+      body: JSON.stringify({ key }),
+    });
+
+    if (res instanceof Error || !res) return;
+
+    if (deleteLinkCallback) deleteLinkCallback(key);
+    setLinksBeingRemoved((prev) => prev.filter((k) => k !== key));
+  }
+  return [removeLink, { linksBeingRemoved, error }] as const;
 }
 
 function formatExpires(secondsDiff: number) {
