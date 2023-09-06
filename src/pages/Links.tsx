@@ -1,18 +1,42 @@
-import { SVGProps, useCallback, useEffect, useState } from "react";
+import { SVGProps, useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 
 import ShortenedLink from "../components/ShortenedLink";
 import useLazyFetch, { Config } from "../hooks/useLazyFetch";
 import useSavedLinks from "../hooks/useSavedLinks";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
+import toastPromise, { ToastID } from "../utils/toast-promise";
 
 export default function LinksPage() {
   useSetDocumentTitle("Links salvos");
 
+  const toastId = useRef<ToastID>(null);
   const { links, expires, removeLocalLink } = useUpdatedLinksTTL();
-  const [removeLink, { linksBeingRemoved }] = useRemoveLink({
+
+  const removeLinkCallbacks = {
     deleteLinkCallback: removeLocalLink,
-  });
+    onLoading: () => {
+      toastId.current = toastPromise.loading("Removendo link...");
+    },
+    onSuccess: () => {
+      if (!toastId.current) return;
+      toastPromise.success("Link removido com sucesso!", toastId.current);
+      toastId.current = null;
+    },
+    onError: () => {
+      if (toastId.current) return;
+
+      toastPromise.error(
+        "Aconteceu algum problema! Tente mais tarde!",
+        toastId.current,
+      );
+
+      toastId.current = null;
+    },
+  };
+
+  const [removeLink, { loading: removingLink, linkBeingRemoved }] =
+    useRemoveLink(removeLinkCallbacks);
 
   return (
     <div className="mt-14 flex flex-col items-center gap-2">
@@ -25,11 +49,14 @@ export default function LinksPage() {
               </p>
               <p>Expira em: {expires[l.key]}</p>
             </div>
-            <ShortenedLink link={l.link_url} />
+            <ShortenedLink
+              link={l.link_url}
+              disabled={linkBeingRemoved === l.key}
+            />
             <button
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () => await removeLink(l.key)}
-              disabled={Boolean(linksBeingRemoved.find((key) => key === l.key))}
+              disabled={removingLink}
               title="Remover link"
               className="flex w-full items-center justify-center gap-2 p-2 font-bold text-zinc-950 transition-colors duration-150 hover:text-orange-500 active:text-orange-800 disabled:text-zinc-600"
             >
@@ -50,12 +77,11 @@ function useRemoveLink({
   deleteLinkCallback,
   ...config
 }: Config<boolean> & { deleteLinkCallback?: (key: string) => void } = {}) {
-  const [linksBeingRemoved, setLinksBeingRemoved] = useState<string[]>([]);
-  const [load, { error }] = useLazyFetch<boolean>(config);
+  const [load, { error, loading }] = useLazyFetch<boolean>(config);
+  const [linkBeingRemoved, setLinkBeingRemoved] = useState("");
 
   async function removeLink(key: string) {
-    setLinksBeingRemoved((prev) => prev.concat(key));
-
+    setLinkBeingRemoved(key);
     const res = await load("destroy/", {
       method: "POST",
       body: JSON.stringify({ key }),
@@ -64,9 +90,9 @@ function useRemoveLink({
     if (res instanceof Error || !res) return;
 
     if (deleteLinkCallback) deleteLinkCallback(key);
-    setLinksBeingRemoved((prev) => prev.filter((k) => k !== key));
+    setLinkBeingRemoved("");
   }
-  return [removeLink, { linksBeingRemoved, error }] as const;
+  return [removeLink, { loading, error, linkBeingRemoved }] as const;
 }
 
 function useUpdatedLinksTTL() {
