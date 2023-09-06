@@ -9,51 +9,9 @@ import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
 export default function LinksPage() {
   useSetDocumentTitle("Links salvos");
 
-  const [links, setSavedLinks] = useSavedLinks();
-
-  const updateLinksExpires = useCallback(() => {
-    const now = Date.now();
-    const linksExpires: Record<string, string> = {};
-
-    const filteredLinks = links.filter((link) => {
-      const secondsToExpire = (link.expires - now) / 1000;
-
-      if (secondsToExpire > 0) {
-        linksExpires[link.key] = formatExpires(secondsToExpire);
-
-        return true;
-      }
-
-      return false;
-    });
-
-    if (filteredLinks.length !== links.length) setSavedLinks(filteredLinks);
-
-    return linksExpires;
-  }, [links, setSavedLinks]);
-
-  const [expires, setExpires] =
-    useState<Record<string, string>>(updateLinksExpires);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const linksExpires = updateLinksExpires();
-      setExpires(linksExpires);
-
-      return () => {
-        clearInterval(intervalId);
-      };
-    }, 1000);
-  }, [updateLinksExpires]);
-
+  const { links, expires, removeLocalLink } = useUpdatedLinksTTL();
   const [removeLink, { linksBeingRemoved }] = useRemoveLink({
-    deleteLinkCallback: (key) => {
-      setSavedLinks((prev) => prev.filter((link) => link.key !== key));
-
-      const newExpires = structuredClone(expires) as typeof expires;
-      delete newExpires[key];
-      setExpires(newExpires);
-    },
+    deleteLinkCallback: removeLocalLink,
   });
 
   return (
@@ -109,6 +67,51 @@ function useRemoveLink({
     setLinksBeingRemoved((prev) => prev.filter((k) => k !== key));
   }
   return [removeLink, { linksBeingRemoved, error }] as const;
+}
+
+function useUpdatedLinksTTL() {
+  const [links, setSavedLinks] = useSavedLinks();
+
+  const updateLinksExpires = useCallback(() => {
+    const now = Date.now();
+    const linksExpires: Record<string, string> = {};
+
+    const filteredLinks = links.filter((link) => {
+      const secondsToExpire = (link.expires - now) / 1000;
+
+      if (secondsToExpire > 0) {
+        linksExpires[link.key] = formatExpires(secondsToExpire);
+
+        return true;
+      }
+
+      return false;
+    });
+
+    if (filteredLinks.length !== links.length) setSavedLinks(filteredLinks);
+
+    return linksExpires;
+  }, [links, setSavedLinks]);
+
+  const [expires, setExpires] =
+    useState<Record<string, string>>(updateLinksExpires);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => setExpires(updateLinksExpires), 1000);
+    return () => clearInterval(intervalId);
+  }, [updateLinksExpires]);
+
+  function removeLocalLink(key: string) {
+    setSavedLinks((prev) => prev.filter((link) => link.key !== key));
+
+    setExpires((prevExpires) => {
+      const newExpires = structuredClone(prevExpires) as typeof expires;
+      delete newExpires[key];
+      return newExpires;
+    });
+  }
+
+  return { links, expires, removeLocalLink } as const;
 }
 
 function formatExpires(secondsDiff: number) {
