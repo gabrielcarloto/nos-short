@@ -1,57 +1,46 @@
 import { useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { Link } from "wouter";
 
 import Button from "../components/Button";
 import ShortenedLink from "../components/ShortenedLink";
 import useCreateLink from "../hooks/useCreateLink";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
-import toastDefaults from "../utils/toast-defaults";
+import toastPromise, { ToastID } from "../utils/toast-promise";
 
 import linkIcon from "../assets/Link.svg";
 
 export default function IndexPage() {
   useSetDocumentTitle("Encurtar links");
 
-  const toastId = useRef<ReturnType<typeof toast> | null>(null);
+  const toastId = useRef<ToastID>(null);
   const [link, setLink] = useState("");
   const [showShortenedLink, setShowShortenedLink] = useState(false);
-  const [createShortenedLink, { loading, data: shortenedLink }] = useCreateLink(
-    {
-      onLoading: () => {
-        toastId.current = toast<string>("Encurtando link...", {
-          ...toastDefaults,
-          isLoading: true,
-        });
-      },
-      onSuccess: () => {
-        setShowShortenedLink(true);
 
-        if (toastId.current) {
-          toast.update(toastId.current, {
-            render: "Link encurtado com sucesso!",
-            type: "success",
-            autoClose: 5000,
-            isLoading: false,
-          });
-
-          toastId.current = null;
-        }
-      },
-      onError: () => {
-        if (toastId.current) {
-          toast.update(toastId.current, {
-            render: "Aconteceu algum problema! Tente mais tarde!",
-            type: "error",
-            autoClose: 5000,
-            isLoading: false,
-          });
-
-          toastId.current = null;
-        }
-      },
+  const createLinkCallbacks = {
+    onLoading: () => {
+      toastId.current = toastPromise.loading("Encurtando link...");
     },
-  );
+    onSuccess: () => {
+      setShowShortenedLink(true);
+
+      if (!toastId.current) return;
+      toastPromise.success("Link encurtado com sucesso!", toastId.current);
+      toastId.current = null;
+    },
+    onError: () => {
+      if (toastId.current) return;
+
+      toastPromise.error(
+        "Aconteceu algum problema! Tente mais tarde!",
+        toastId.current,
+      );
+
+      toastId.current = null;
+    },
+  };
+
+  const [createShortenedLink, { loading, data: shortenedLink }] =
+    useCreateLink(createLinkCallbacks);
 
   return (
     <div className="mt-[108px] flex flex-col items-center gap-2 md:mt-40">
