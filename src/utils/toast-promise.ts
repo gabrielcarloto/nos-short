@@ -12,19 +12,23 @@ export default {
     });
   },
   success: (title: string, id: ToastID) => {
-    toast.update(id, {
-      render: title,
-      type: "success",
-      autoClose: 5000,
-      isLoading: false,
-    });
+    if (id) {
+      toast.update(id, {
+        render: title,
+        type: "success",
+        autoClose: 5000,
+        isLoading: false,
+      });
+    }
   },
   error: (title: string, id: ToastID) => {
-    toast.update(id, {
-      render: title,
-      type: "error",
-      autoClose: 5000,
-      isLoading: false,
-    });
+    if (id) {
+      toast.update(id, {
+        render: title,
+        type: "error",
+        autoClose: 5000,
+        isLoading: false,
+      });
+    }
   },
 };
