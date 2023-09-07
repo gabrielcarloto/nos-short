@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { Link } from "wouter";
 
 import { ShareIcon, TrashIcon } from "../components/Icons";
@@ -8,7 +7,6 @@ import useLazyFetch, { Config } from "../hooks/useLazyFetch";
 import useSavedLinks from "../hooks/useSavedLinks";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
 import { formatTTL } from "../utils/date-format";
-import toastDefaults from "../utils/toast-defaults";
 import toastPromise, { ToastID } from "../utils/toast-promise";
 
 export default function LinksPage() {
