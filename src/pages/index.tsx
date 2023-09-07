@@ -114,7 +114,7 @@ export default function IndexPage() {
             value={linkTTL}
             onChange={(e) => setLinkTTL(e.target.valueAsNumber)}
             aria-label="Selecionar duração do link"
-            list="link-ttl-values"
+            disabled={loading}
           />
         </form>
       )}
