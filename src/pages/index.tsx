@@ -88,11 +88,15 @@ export default function IndexPage() {
             await createShortenedLink(link, RANGE_VALUES[linkTTL].seconds);
           }}
         >
+          <label className="sr-only" htmlFor="link-input">
+            URL a ser encurtada:
+          </label>
           <input
             placeholder="Insira um link para encurtar..."
             type="text"
             className="grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-3 text-zinc-400 placeholder-zinc-400 invalid:border-orange-500"
             value={link}
+            id="link-input"
             disabled={loading}
             onChange={(e) => setLink(e.target.value.trim())}
           />
@@ -113,7 +117,6 @@ export default function IndexPage() {
             max={RANGE_VALUES.length - 1}
             value={linkTTL}
             onChange={(e) => setLinkTTL(e.target.valueAsNumber)}
-            aria-label="Selecionar duração do link"
             disabled={loading}
           />
         </form>
