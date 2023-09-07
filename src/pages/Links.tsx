@@ -1,7 +1,8 @@
-import { SVGProps, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "wouter";
 
+import { ShareIcon, TrashIcon } from "../components/Icons";
 import ShortenedLink from "../components/ShortenedLink";
 import useLazyFetch, { Config } from "../hooks/useLazyFetch";
 import useSavedLinks from "../hooks/useSavedLinks";
@@ -163,46 +164,4 @@ function useUpdatedLinksTTL() {
   }
 
   return { links, expires, removeLocalLink } as const;
-}
-
-function TrashIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="30"
-      height="30"
-      fill="none"
-      viewBox="0 0 30 30"
-      {...props}
-    >
-      <path
-        fill="currentColor"
-        d="M26 5h-4.5V3.5A3.5 3.5 0 0018 0h-6a3.5 3.5 0 00-3.5 3.5V5H4a1.5 1.5 0 000 3h.5v17A2.5 2.5 0 007 27.5h16a2.5 2.5 0 002.5-2.5V8h.5a1.5 1.5 0 000-3zM11.5 3.5A.5.5 0 0112 3h6a.5.5 0 01.5.5V5h-7V3.5zm11 21h-15V8h15v16.5zm-9-12.5v8a1.5 1.5 0 11-3 0v-8a1.5 1.5 0 113 0zm6 0v8a1.5 1.5 0 11-3 0v-8a1.5 1.5 0 113 0z"
-      ></path>
-    </svg>
-  );
-}
-
-// lucide share-2
-function ShareIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="30"
-      height="30"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <circle cx="18" cy="5" r="3" />
-      <circle cx="6" cy="12" r="3" />
-      <circle cx="18" cy="19" r="3" />
-      <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
-      <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
-    </svg>
-  );
 }

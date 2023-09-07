@@ -3,8 +3,8 @@ import { toast } from "react-toastify";
 
 import toastDefaults from "../utils/toast-defaults";
 import Button from "./Button";
+import { CheckIcon } from "./Icons";
 
-import checkIcon from "../assets/Check.svg";
 import clipboardIcon from "../assets/Clipboard.svg";
 
 export default function ShortenedLink({
@@ -55,10 +55,11 @@ export default function ShortenedLink({
           }
         }}
       >
-        <img
-          src={copiedLink ? checkIcon : clipboardIcon}
-          alt={"Ícone de " + (copiedLink ? "verificado" : "prancheta")}
-        />
+        {copiedLink ? (
+          <CheckIcon aria-hidden />
+        ) : (
+          <img src={clipboardIcon} aria-hidden />
+        )}
       </Button>
     </div>
   );

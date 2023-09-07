@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     fontFamily: {
       sans: ['"Open Sans"'],
@@ -8,9 +8,9 @@ export default {
     },
     extend: {
       fontSize: {
-        '4xl': '2.5rem',
+        "4xl": "2.5rem",
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")({ nocompatible: true })],
 };

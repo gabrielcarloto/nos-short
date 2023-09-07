@@ -1,41 +1,36 @@
-import { useRef, useState } from "react";
+import { Listbox } from "@headlessui/react";
+import { Fragment, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { Link } from "wouter";
 
 import Button from "../components/Button";
+import { CheckIcon } from "../components/Icons";
 import ShortenedLink from "../components/ShortenedLink";
 import useCreateLink from "../hooks/useCreateLink";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
-import { DAY, formatTTL, HOUR, MINUTE } from "../utils/date-format";
+import { DAY, HOUR, MINUTE } from "../utils/date-format";
+import toastDefaults from "../utils/toast-defaults";
 import toastPromise, { ToastID } from "../utils/toast-promise";
 
 import linkIcon from "../assets/Link.svg";
 
-function createTimeRange(length: number, time: number) {
-  return Array.from({ length }, (_, i) => time * (i + 1));
-}
+const LINK_TIME_UNITS = [
+  { unit: "minutos", min: 1, max: 59, value: MINUTE },
+  { unit: "horas", min: 1, max: 23, value: HOUR },
+  { unit: "dias", min: 1, max: 7, value: DAY },
+] as const;
 
-const RANGE_SECONDS = [
-  MINUTE,
-  ...createTimeRange(5, MINUTE * 10),
-  ...createTimeRange(23, HOUR),
-  ...createTimeRange(7, DAY),
-];
-
-const RANGE_VALUES = RANGE_SECONDS.map((s) => {
-  return {
-    text: formatTTL(s),
-    seconds: s,
-  };
-});
-
-const TEN_MINUTES_RANGE_INDEX = 1;
+const DEFAULT_LINK_TIME_UNIT = LINK_TIME_UNITS[0];
 
 export default function IndexPage() {
   useSetDocumentTitle("Encurtar links");
 
   const toastId = useRef<ToastID>(null);
   const [link, setLink] = useState("");
-  const [linkTTL, setLinkTTL] = useState(TEN_MINUTES_RANGE_INDEX);
+  const [linkTimeUnit, setLinkTimeUnit] = useState<
+    (typeof LINK_TIME_UNITS)[number]
+  >(DEFAULT_LINK_TIME_UNIT);
+
   const [showShortenedLink, setShowShortenedLink] = useState(false);
 
   const createLinkCallbacks = {
@@ -81,11 +76,24 @@ export default function IndexPage() {
         </>
       ) : (
         <form
-          className="grid w-full grid-cols-[auto,max-content] grid-rows-[auto,repeat(2,max-content)] gap-x-4 gap-y-2"
+          className="grid w-full grid-cols-[auto,46px] grid-rows-2 gap-x-4 gap-y-2"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={async (e) => {
             e.preventDefault();
-            await createShortenedLink(link, RANGE_VALUES[linkTTL].seconds);
+            const formData = new FormData(e.target as HTMLFormElement);
+            const duration = formData.get("duration");
+
+            if (!duration) {
+              return toast("Preencha a duração corretamente", {
+                ...toastDefaults,
+                type: "error",
+              });
+            }
+
+            await createShortenedLink(
+              link,
+              (duration as unknown as number) * linkTimeUnit.value,
+            );
           }}
         >
           <label className="sr-only" htmlFor="link-input">
@@ -100,25 +108,67 @@ export default function IndexPage() {
             disabled={loading}
             onChange={(e) => setLink(e.target.value.trim())}
           />
-          <Button title="Encurtar link" disabled={link === "" || loading}>
+          <Button
+            type="submit"
+            title="Encurtar link"
+            disabled={link === "" || loading}
+          >
             <img src={linkIcon} alt="Ícone de corrente" />
           </Button>
-          <label htmlFor="link-ttl" className="text-sm text-zinc-600">
-            Duração:{" "}
-            <span aria-live="polite" aria-atomic="true">
-              {RANGE_VALUES[linkTTL].text}
-            </span>
-          </label>
-          <input
-            id="link-ttl"
-            className="col-span-2 accent-amber-500"
-            type="range"
-            min={0}
-            max={RANGE_VALUES.length - 1}
-            value={linkTTL}
-            onChange={(e) => setLinkTTL(e.target.valueAsNumber)}
-            disabled={loading}
-          />
+          <fieldset className="col-span-2 flex items-center gap-2">
+            <legend className="sr-only">Duração do link</legend>
+            <label htmlFor="number-input" className="text-sm text-zinc-600">
+              Duração:
+            </label>
+            <input
+              id="number-input"
+              name="duration"
+              type="number"
+              min={linkTimeUnit.min}
+              max={linkTimeUnit.max}
+              defaultValue={10}
+              className="w-1/2 grow rounded-lg border-2 border-zinc-300 bg-zinc-50 px-2 py-1 text-center text-zinc-400 placeholder-zinc-400 invalid:border-orange-500"
+            />
+            <Listbox
+              disabled={loading}
+              value={linkTimeUnit}
+              onChange={setLinkTimeUnit}
+              defaultValue={LINK_TIME_UNITS[0]}
+            >
+              <Listbox.Label className="sr-only">Duração:</Listbox.Label>
+              <div className="relative w-1/2 grow">
+                <Listbox.Button
+                  id="listbox"
+                  className="w-full rounded-lg border-2 border-zinc-300 bg-zinc-50 px-6 py-1 text-zinc-400 placeholder-zinc-400 invalid:border-orange-500"
+                >
+                  {linkTimeUnit.unit}
+                </Listbox.Button>
+                <Listbox.Options className="absolute mt-2 max-h-60 w-full overflow-y-scroll rounded-lg border-2 border-zinc-300 bg-zinc-50 px-2 py-2 text-zinc-600 scrollbar scrollbar-track-zinc-50 scrollbar-thumb-zinc-400 scrollbar-track-rounded-full scrollbar-thumb-rounded-xl scrollbar-w-1">
+                  {LINK_TIME_UNITS.map((timeUnit, i) => (
+                    <>
+                      <Listbox.Option
+                        key={timeUnit.value}
+                        as={Fragment}
+                        value={timeUnit}
+                      >
+                        {({ selected }) => (
+                          <li className="flex cursor-pointer items-center justify-center gap-2 rounded-lg p-1 transition-colors hover:bg-zinc-100 hover:text-zinc-600">
+                            {timeUnit.unit}{" "}
+                            {selected ? (
+                              <CheckIcon width="15" height="15" />
+                            ) : null}
+                          </li>
+                        )}
+                      </Listbox.Option>
+                      {i < LINK_TIME_UNITS.length - 1 ? (
+                        <hr className="my-1" />
+                      ) : null}
+                    </>
+                  ))}
+                </Listbox.Options>
+              </div>
+            </Listbox>
+          </fieldset>
         </form>
       )}
       <Link href="/links">
