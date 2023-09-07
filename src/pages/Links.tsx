@@ -71,16 +71,9 @@ export default function LinksPage() {
             <button
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () => {
-                try {
-                  await navigator.share({
-                    url: l.link_url,
-                  });
-                } catch (_) {
-                  toast("Aconteceu algum problema! Tente mais tarde!", {
-                    ...toastDefaults,
-                    type: "error",
-                  });
-                }
+                await navigator.share({
+                  url: l.link_url,
+                });
               }}
               disabled={removingLink}
               title="Compartilhar link"
