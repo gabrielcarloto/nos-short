@@ -68,10 +68,8 @@ module.exports = {
       "error",
       {
         groups: [
-          ["^\\u0000"],
           ["^node:"],
           ["^@?\\w"],
-          ["^"],
           ["^\\."],
           ["^\\..*\\.(svg|jpg|jpeg|png|css)"],
         ],

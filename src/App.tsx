@@ -1,10 +1,10 @@
-import "react-toastify/dist/ReactToastify.min.css";
-
 import { ToastContainer } from "react-toastify";
 import { Link, Route, Switch } from "wouter";
 
 import IndexPage from "./pages";
 import LinksPage from "./pages/Links";
+
+import "react-toastify/dist/ReactToastify.min.css";
 
 export default function App() {
   return (
