@@ -6,6 +6,7 @@ import { Link } from "wouter";
 import Button from "../components/Button";
 import { CheckIcon } from "../components/Icons";
 import ShortenedLink from "../components/ShortenedLink";
+import useCheckConnection from "../hooks/useCheckConnection";
 import useCreateLink from "../hooks/useCreateLink";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
 import { DAY, HOUR, MINUTE } from "../utils/date-format";
@@ -25,6 +26,7 @@ const DEFAULT_LINK_TIME_UNIT = LINK_TIME_UNITS[0];
 export default function IndexPage() {
   useSetDocumentTitle("Encurtar links");
 
+  const isUserOnline = useCheckConnection();
   const toastId = useRef<ToastID>(null);
   const [link, setLink] = useState("");
   const [linkTimeUnit, setLinkTimeUnit] = useState<
@@ -108,7 +110,10 @@ export default function IndexPage() {
             disabled={loading}
             onChange={(e) => setLink(e.target.value.trim())}
           />
-          <Button type="submit" disabled={link === "" || loading}>
+          <Button
+            type="submit"
+            disabled={link === "" || loading || !isUserOnline}
+          >
             <img src={linkIcon} aria-hidden />
             <span className="sr-only">Encurtar link</span>
           </Button>

@@ -3,6 +3,7 @@ import { Link } from "wouter";
 
 import { ShareIcon, TrashIcon } from "../components/Icons";
 import ShortenedLink from "../components/ShortenedLink";
+import useCheckConnection from "../hooks/useCheckConnection";
 import useLazyFetch, { Config } from "../hooks/useLazyFetch";
 import useSavedLinks from "../hooks/useSavedLinks";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
@@ -37,6 +38,8 @@ export default function LinksPage() {
   const [removeLink, { loading: removingLink, linkBeingRemoved }] =
     useRemoveLink(removeLinkCallbacks);
 
+  const isUserOnline = useCheckConnection();
+
   return (
     <div className="mt-14 flex flex-col items-center gap-2">
       {links.map((l) => {
@@ -59,7 +62,7 @@ export default function LinksPage() {
             <button
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () => await removeLink(l.key)}
-              disabled={removingLink}
+              disabled={removingLink || !isUserOnline}
               title="Remover link"
               className="flex w-full items-center justify-center gap-2 p-2 font-bold text-zinc-950 transition-colors duration-150 hover:text-orange-500 active:text-orange-800 disabled:text-zinc-600"
             >
