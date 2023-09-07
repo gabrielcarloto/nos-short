@@ -5,6 +5,7 @@ import ShortenedLink from "../components/ShortenedLink";
 import useLazyFetch, { Config } from "../hooks/useLazyFetch";
 import useSavedLinks from "../hooks/useSavedLinks";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
+import { formatTTL } from "../utils/date-format";
 import toastPromise, { ToastID } from "../utils/toast-promise";
 
 export default function LinksPage() {
@@ -106,7 +107,7 @@ function useUpdatedLinksTTL() {
       const secondsToExpire = (link.expires - now) / 1000;
 
       if (secondsToExpire > 0) {
-        linksExpires[link.key] = formatExpires(secondsToExpire);
+        linksExpires[link.key] = formatTTL(secondsToExpire);
 
         return true;
       }
@@ -138,24 +139,6 @@ function useUpdatedLinksTTL() {
   }
 
   return { links, expires, removeLocalLink } as const;
-}
-
-function formatExpires(secondsDiff: number) {
-  const minute = 60,
-    hour = minute * 60,
-    day = hour * 24;
-
-  if (secondsDiff < minute) return Math.round(secondsDiff) + " segundos";
-  if (secondsDiff < hour) return Math.round(secondsDiff / minute) + " minutos";
-
-  if (secondsDiff < day)
-    return `${Math.round(secondsDiff / hour)} horas e ${Math.round(
-      (secondsDiff % hour) / minute,
-    )} minutos`;
-
-  const days = Math.round(secondsDiff / day);
-
-  return days + " dia" + (days > 1 ? "s" : "");
 }
 
 function TrashIcon(props: SVGProps<SVGSVGElement>) {

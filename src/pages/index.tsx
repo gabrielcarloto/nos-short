@@ -5,15 +5,37 @@ import Button from "../components/Button";
 import ShortenedLink from "../components/ShortenedLink";
 import useCreateLink from "../hooks/useCreateLink";
 import useSetDocumentTitle from "../hooks/useSetDocumentTitle";
+import { DAY, formatTTL, HOUR, MINUTE } from "../utils/date-format";
 import toastPromise, { ToastID } from "../utils/toast-promise";
 
 import linkIcon from "../assets/Link.svg";
+
+function createTimeRange(length: number, time: number) {
+  return Array.from({ length }, (_, i) => time * (i + 1));
+}
+
+const RANGE_SECONDS = [
+  MINUTE,
+  ...createTimeRange(5, MINUTE * 10),
+  ...createTimeRange(23, HOUR),
+  ...createTimeRange(7, DAY),
+];
+
+const RANGE_VALUES = RANGE_SECONDS.map((s) => {
+  return {
+    text: formatTTL(s),
+    seconds: s,
+  };
+});
+
+const TEN_MINUTES_RANGE_INDEX = 1;
 
 export default function IndexPage() {
   useSetDocumentTitle("Encurtar links");
 
   const toastId = useRef<ToastID>(null);
   const [link, setLink] = useState("");
+  const [linkTTL, setLinkTTL] = useState(TEN_MINUTES_RANGE_INDEX);
   const [showShortenedLink, setShowShortenedLink] = useState(false);
 
   const createLinkCallbacks = {
@@ -59,11 +81,11 @@ export default function IndexPage() {
         </>
       ) : (
         <form
-          className="flex w-full gap-4"
+          className="grid w-full grid-cols-[auto,max-content] grid-rows-[auto,repeat(2,max-content)] gap-x-4 gap-y-2"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={async (e) => {
             e.preventDefault();
-            await createShortenedLink(link);
+            await createShortenedLink(link, RANGE_VALUES[linkTTL].seconds);
           }}
         >
           <input
@@ -77,6 +99,23 @@ export default function IndexPage() {
           <Button title="Encurtar link" disabled={link === "" || loading}>
             <img src={linkIcon} alt="Ícone de corrente" />
           </Button>
+          <label htmlFor="link-ttl" className="text-sm text-zinc-600">
+            Duração:{" "}
+            <span aria-live="polite" aria-atomic="true">
+              {RANGE_VALUES[linkTTL].text}
+            </span>
+          </label>
+          <input
+            id="link-ttl"
+            className="col-span-2 accent-amber-500"
+            type="range"
+            min={0}
+            max={RANGE_VALUES.length - 1}
+            value={linkTTL}
+            onChange={(e) => setLinkTTL(e.target.valueAsNumber)}
+            aria-label="Selecionar duração do link"
+            list="link-ttl-values"
+          />
         </form>
       )}
       <Link href="/links">

@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { MINUTE } from "../utils/date-format";
 import useLazyFetch, { Config } from "./useLazyFetch";
 import type { SavedLink } from "./useSavedLinks";
 import useSavedLinks from "./useSavedLinks";
@@ -32,10 +33,11 @@ export default function useCreateLink(config: Config<ShortenedURL> = {}) {
     },
   });
 
-  async function createLink(link: string) {
+  async function createLink(link: string, ttl: number = MINUTE * 10) {
     setShortenedLink(null);
     const params = new URLSearchParams({
       url: link,
+      ttl: String(ttl),
     });
 
     await load("create/?" + params.toString(), {
