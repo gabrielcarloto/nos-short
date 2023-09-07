@@ -108,12 +108,9 @@ export default function IndexPage() {
             disabled={loading}
             onChange={(e) => setLink(e.target.value.trim())}
           />
-          <Button
-            type="submit"
-            title="Encurtar link"
-            disabled={link === "" || loading}
-          >
-            <img src={linkIcon} alt="Ícone de corrente" />
+          <Button type="submit" disabled={link === "" || loading}>
+            <img src={linkIcon} aria-hidden />
+            <span className="sr-only">Encurtar link</span>
           </Button>
           <fieldset className="col-span-2 flex items-center gap-2">
             <legend className="sr-only">Duração do link</legend>
