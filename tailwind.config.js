@@ -10,6 +10,9 @@ export default {
       fontSize: {
         "4xl": "2.5rem",
       },
+      screens: {
+        "2xl": "1440px",
+      },
     },
   },
   plugins: [require("tailwind-scrollbar")({ nocompatible: true })],

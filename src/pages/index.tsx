@@ -62,7 +62,7 @@ export default function IndexPage() {
     useCreateLink(createLinkCallbacks);
 
   return (
-    <div className="mt-[108px] flex flex-col items-center gap-2 md:mt-40 landscape:mt-20 landscape:2xl:mt-[108px]">
+    <div className="mt-[108px] flex flex-col items-center gap-2 md:mt-40 landscape:mt-0 landscape:h-full landscape:justify-center landscape:2xl:mt-40 landscape:2xl:h-auto">
       {showShortenedLink ? (
         <>
           <ShortenedLink link={shortenedLink!.link_url} />
