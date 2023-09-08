@@ -4,7 +4,7 @@
 
 O nós.short é um projeto criado para o processo seletivo do [Nós - Nosso Olhar Solidário](https://nossoolharsolidario.com.br/). O projeto teve como base um design no Figma e instruções detalhadas no Notion, bem como sessões semanais de mentorias e aulas disponibilizadas aos participantes.
 
-De forma resumida, o nós.short é um encurtador de links que utiliza a API do [url.dev](url.dev). O site deste repositório está disponível em [nos-short-chi.vercel.app](nos-short-chi.vercel.app).
+De forma resumida, o nós.short é um encurtador de links que utiliza a API do [url.dev](https://url.dev). O site deste repositório está disponível em [nos-short-chi.vercel.app](https://nos-short-chi.vercel.app).
 
 O Nós é projeto de extensão da UTFPR que conecta diretamente doadores a quem precisa de ajuda. Mais informações: [página "quem somos nós"](https://nossoolharsolidario.com.br/quem-somos-nos).
 
