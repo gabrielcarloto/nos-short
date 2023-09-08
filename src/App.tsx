@@ -20,7 +20,7 @@ export default function App() {
 
   return (
     <>
-      <div className="m-auto grid min-h-screen w-[min(474px,100%)] grid-rows-[35vh_auto_max-content] py-4 text-zinc-800">
+      <div className="m-auto grid min-h-screen w-[min(474px,100%)] grid-rows-[minmax(max-content,35vh)_auto_max-content] py-4 text-zinc-800">
         <div className="flex flex-col justify-between">
           <header className="flex w-full justify-center md:h-[216px] lg:h-[182px]">
             <Link href="/">
