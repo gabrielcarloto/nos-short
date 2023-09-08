@@ -11,7 +11,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
       },
-      includeAssets: ["assets/*", "components/Icons.js"],
+      includeAssets: ["assets/*"],
       manifest: {
         name: "nós.short - O melhor encurtador de links",
         description: "Encurte, salve e compartilhe links em poucos cliques!",
