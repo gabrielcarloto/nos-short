@@ -27,7 +27,7 @@ export default function ShortenedLink({
         aria-disabled={disabled}
         ref={anchorRef}
         onClick={(e) => {
-          if (anchorRef.current && anchorRef.current.ariaDisabled)
+          if (anchorRef.current && anchorRef.current.ariaDisabled === "true")
             e.preventDefault();
         }}
       >
