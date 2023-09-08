@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import safeCall from "../utils/safeCall";
+
 interface APIError {
   error: {
     message: string;
@@ -11,14 +13,6 @@ export interface Config<DataType> {
   onSuccess?: (data: DataType) => void;
   onLoading?: () => void;
   onError?: (e: unknown) => void;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function safeCall<T extends (...args: any[]) => void>(
-  fn?: T,
-  ...args: Parameters<T>
-) {
-  if (fn) fn(...args);
 }
 
 export default function useLazyFetch<DataType = unknown>(

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { MINUTE } from "../utils/date-format";
+import safeCall from "../utils/safeCall";
 import useLazyFetch, { Config } from "./useLazyFetch";
 import type { SavedLink } from "./useSavedLinks";
 import useSavedLinks from "./useSavedLinks";
@@ -19,7 +20,7 @@ export default function useCreateLink(config: Config<ShortenedURL> = {}) {
   const [load, state] = useLazyFetch<ShortenedURL>({
     ...config,
     onSuccess: (data) => {
-      if (config.onSuccess) config.onSuccess(data);
+      safeCall(config.onSuccess, data);
 
       const parsedData: SavedLink = {
         url: data.url,

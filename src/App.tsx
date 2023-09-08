@@ -1,12 +1,23 @@
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Link, Route, Switch } from "wouter";
 
+import useCheckConnection from "./hooks/useCheckConnection";
 import IndexPage from "./pages";
 import LinksPage from "./pages/Links";
+import toastDefaults from "./utils/toast-defaults";
 
 import "react-toastify/dist/ReactToastify.min.css";
 
 export default function App() {
+  useCheckConnection({
+    onOffline: () => {
+      toast("Você está offline! Não será possível criar ou remover links.", {
+        ...toastDefaults,
+        type: "warning",
+      });
+    },
+  });
+
   return (
     <>
       <div className="m-auto grid min-h-screen w-[min(474px,100%)] grid-rows-[35vh_auto_max-content] py-4 text-zinc-800">
